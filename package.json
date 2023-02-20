@@ -1,0 +1,13 @@
+{
+  "name": "journey-planner",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "npm parcel index.html"
+  },
+  "author": "Łukasz Wojtkowski",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}
