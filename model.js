@@ -8,7 +8,6 @@ class App {
     this.#loadMap.bind(this)();
     this.#getCurrentPosition();
     console.log('test');
-    console.log('test');
   }
 
   #getCurrentPosition() {
