@@ -9,5 +9,8 @@
   "license": "ISC",
   "devDependencies": {
     "parcel": "^2.8.3"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.3"
   }
 }
