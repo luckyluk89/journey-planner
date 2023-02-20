@@ -3,17 +3,23 @@ import * as L from 'leaflet';
 class App {
   #mapContainer = document.getElementById('map');
   #map = L.map(this.#mapContainer).setView([51.505, -0.09], 13);
+  // #map;
+  #position;
 
   constructor() {
     this.#loadMap.bind(this)();
     this.#getCurrentPosition();
-    console.log('test');
   }
 
   #getCurrentPosition() {
-    navigator.geolocation.getCurrentPosition(position => position);
+    const position = navigator.geolocation.getCurrentPosition(position => {
+      position;
+      console.log(position);
+    });
   }
   #loadMap() {
+    // const coord = this.#getCurrentPosition;
+
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution:
