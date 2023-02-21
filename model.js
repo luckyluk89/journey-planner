@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 class App {
   #mapContainer = document.getElementById('map');
   #map;
-  #mapZoomLevel = 13;
+  #mapZoomLevel = 3;
 
   constructor() {
     // Get user's position
@@ -20,6 +20,20 @@ class App {
       }
     );
   }
+
+  #onMapClick(e) {
+    const { lat, lng } = e.latlng;
+    const coord = [lat, lng];
+    console.log(coord);
+    this.#createMarker.bind(this)(coord);
+  }
+
+  #showForm() {}
+
+  #createMarker(coord) {
+    L.marker(coord).addTo(this.#map);
+  }
+
   #loadMap(position) {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
@@ -32,6 +46,7 @@ class App {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
+    this.#map.on('click', this.#onMapClick.bind(this));
   }
 }
 
