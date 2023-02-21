@@ -2,28 +2,35 @@ import * as L from 'leaflet';
 
 class App {
   #mapContainer = document.getElementById('map');
-  #map = L.map(this.#mapContainer).setView([51.505, -0.09], 13);
-  // #map;
-  #position;
+  #map;
+  #mapZoomLevel = 13;
 
   constructor() {
-    this.#loadMap.bind(this)();
+    // Get user's position
     this.#getCurrentPosition();
   }
 
   #getCurrentPosition() {
-    const position = navigator.geolocation.getCurrentPosition(position => {
-      position;
-      console.log(position);
-    });
+    navigator.geolocation.getCurrentPosition(
+      this.#loadMap.bind(this),
+      function () {
+        alert(
+          'Nie można ustalić Twojej pozycji. Powodem jest prawdopodobnie wyłączona usługa geolokalizacji w przeglądarce'
+        );
+      }
+    );
   }
-  #loadMap() {
-    // const coord = this.#getCurrentPosition;
+  #loadMap(position) {
+    const { latitude } = position.coords;
+    const { longitude } = position.coords;
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+    const coords = [latitude, longitude];
+
+    this.#map = L.map(this.#mapContainer).setView(coords, this.#mapZoomLevel);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
   }
 }
