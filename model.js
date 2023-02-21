@@ -15,7 +15,7 @@ export const getPosition = async function () {
     const pos = await geolocate();
     const { latitude: lat, longitude: lng } = pos.coords;
     state.currentPosition = [lat, lng];
-    console.log(state.currentPosition);
+    // console.log(state.currentPosition);
   } catch (err) {
     alert(err);
   }
