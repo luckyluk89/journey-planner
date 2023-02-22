@@ -4,6 +4,7 @@ const inputCountry = document.querySelector('.form__input--country');
 const inputDistance = document.querySelector('.form__input--distance');
 const inputCost = document.querySelector('.form__input--cost');
 const inputYear = document.querySelector('.form__input--date');
+const form = document.querySelector('.form');
 
 class Journey {
   #country = '';
@@ -12,18 +13,34 @@ class Journey {
   #year = '';
   #coords = '';
 
-  constructor(country, distance, cost, year, coords = '') {
+  constructor(country, cost, distance, year, coords = '') {
     this.#country = country;
     this.#distance = distance;
-    this.#coords = coords;
     this.#cost = cost;
     this.#year = year;
+    this.#coords = coords;
+  }
+
+  renderJourney() {
+    const html = `<li class="workout workout--cycling" data-id="1234567891">
+    <h2 class="workout__title">${this.#country} w ${this.#year} r.</h2>
+    <div class="workout__details">
+      <span class="workout__icon">🛬</span>
+      <span class="workout__value">${this.#distance}</span>
+      <span class="workout__unit">km</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">💲</span>
+      <span class="workout__value">${this.#cost}</span>
+      <span class="workout__unit">zł</span>
+    </div>`;
+    form.insertAdjacentHTML('afterend', html);
   }
 }
 
 class App {
   #mapContainer = document.getElementById('map');
-  #form = document.querySelector('.form');
+
   #map;
   #mapZoomLevel = 3;
   #clickCoords;
@@ -31,7 +48,7 @@ class App {
   constructor() {
     // Get user's position
     this.#getCurrentPosition();
-    this.#form.addEventListener('submit', this.#getJourneyData);
+    form.addEventListener('submit', this.#getJourneyData.bind(this));
   }
 
   #getCurrentPosition() {
@@ -49,18 +66,16 @@ class App {
     const { lat, lng } = e.latlng;
     const coords = [lat, lng];
     this.#clickCoords = coords;
-    console.log(coords);
     this.#createMarker.bind(this)(coords);
     this.#showForm.bind(this)();
   }
 
   #showForm() {
-    if (this.#form.classList.contains('hidden'))
-      this.#form.classList.remove('hidden');
+    if (form.classList.contains('hidden')) form.classList.remove('hidden');
   }
 
   // #submitForm() {
-  //   this.#form.addEventListener('submit', function (e) {
+  //   form.addEventListener('submit', function (e) {
   //     e.preventDefault();
   //     this.#getJourneyData();
   //   });
@@ -74,12 +89,12 @@ class App {
     const year = inputYear.value;
 
     let journey;
-    journey = new Journey(country, cost, distance, year);
-    console.log(journey);
+    journey = new Journey(country, cost, distance, year, this.#clickCoords);
+    journey.renderJourney();
   }
 
-  #createMarker(coord) {
-    L.marker(coord).addTo(this.#map);
+  #createMarker(coords) {
+    L.marker(coords).addTo(this.#map);
   }
 
   #loadMap(position) {
