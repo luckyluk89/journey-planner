@@ -1,13 +1,20 @@
 import * as L from 'leaflet';
+class Journey {
+  name = '';
+  country = '';
+  coords = '';
+}
 
 class App {
   #mapContainer = document.getElementById('map');
+  #form = document.querySelector('.form');
   #map;
   #mapZoomLevel = 3;
 
   constructor() {
     // Get user's position
     this.#getCurrentPosition();
+    // console.log(this.#form);
   }
 
   #getCurrentPosition() {
@@ -26,9 +33,15 @@ class App {
     const coord = [lat, lng];
     console.log(coord);
     this.#createMarker.bind(this)(coord);
+    this.#showForm.bind(this)();
   }
 
-  #showForm() {}
+  #showForm() {
+    if (this.#form.classList.contains('hidden'))
+      this.#form.classList.remove('hidden');
+  }
+
+  #submitForm() {}
 
   #createMarker(coord) {
     L.marker(coord).addTo(this.#map);
