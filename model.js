@@ -1,8 +1,24 @@
 import * as L from 'leaflet';
+
+const inputCountry = document.querySelector('.form__input--country');
+const inputDistance = document.querySelector('.form__input--distance');
+const inputCost = document.querySelector('.form__input--cost');
+const inputYear = document.querySelector('.form__input--date');
+
 class Journey {
-  name = '';
-  country = '';
-  coords = '';
+  #country = '';
+  #cost = '';
+  #distance = '';
+  #year = '';
+  #coords = '';
+
+  constructor(country, distance, cost, year, coords = '') {
+    this.#country = country;
+    this.#distance = distance;
+    this.#coords = coords;
+    this.#cost = cost;
+    this.#year = year;
+  }
 }
 
 class App {
@@ -10,11 +26,12 @@ class App {
   #form = document.querySelector('.form');
   #map;
   #mapZoomLevel = 3;
+  #clickCoords;
 
   constructor() {
     // Get user's position
     this.#getCurrentPosition();
-    // console.log(this.#form);
+    this.#form.addEventListener('submit', this.#getJourneyData);
   }
 
   #getCurrentPosition() {
@@ -30,9 +47,10 @@ class App {
 
   #onMapClick(e) {
     const { lat, lng } = e.latlng;
-    const coord = [lat, lng];
-    console.log(coord);
-    this.#createMarker.bind(this)(coord);
+    const coords = [lat, lng];
+    this.#clickCoords = coords;
+    console.log(coords);
+    this.#createMarker.bind(this)(coords);
     this.#showForm.bind(this)();
   }
 
@@ -41,7 +59,24 @@ class App {
       this.#form.classList.remove('hidden');
   }
 
-  #submitForm() {}
+  // #submitForm() {
+  //   this.#form.addEventListener('submit', function (e) {
+  //     e.preventDefault();
+  //     this.#getJourneyData();
+  //   });
+  // }
+
+  #getJourneyData(event) {
+    event.preventDefault();
+    const country = inputCountry.value;
+    const cost = inputCost.value;
+    const distance = inputDistance.value;
+    const year = inputYear.value;
+
+    let journey;
+    journey = new Journey(country, cost, distance, year);
+    console.log(journey);
+  }
 
   #createMarker(coord) {
     L.marker(coord).addTo(this.#map);

@@ -43,27 +43,28 @@
       <ul class="workouts">
         <form class="form hidden">
           <div class="form__row">
-            <label class="form__label">Typ</label>
-            <select class="form__input form__input--type">
+            <!-- <label class="form__label">Typ</label> -->
+            <!-- <select class="form__input form__input--type">
               <option value="lot">Lot</option>
               <option value="cycling">Cycling</option>
-            </select>
+            </select> -->
+            <div class="form__row">
+              <label class="form__label">Kraj</label>
+              <input class="form__input form__input--country" />
+            </div>
           </div>
           <div class="form__row">
             <label class="form__label">Koszt</label>
-            <input class="form__input form__input--distance" placeholder="zł" />
+            <input class="form__input form__input--cost" placeholder="zł" />
           </div>
           <div class="form__row">
             <label class="form__label">Dystans</label>
-            <input class="form__input form__input--duration" placeholder="km" />
+            <input class="form__input form__input--distance" placeholder="km" />
           </div>
 
           <div class="form__row">
-            <label class="form__label">Czas podróży</label>
-            <input
-              class="form__input form__input--cadence"
-              placeholder="godz."
-            />
+            <label class="form__label">Termin</label>
+            <input class="form__input form__input--date" />
           </div>
           <div class="form__row form__row--hidden">
             <label class="form__label">Elev Gain</label>
