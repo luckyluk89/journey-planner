@@ -6,25 +6,25 @@ class View {
   #map;
   #mapZoomLevel = 18;
 
-  //   constructor() {
-  //     // Get user's position
-  //     this.#loadMap.bind(this)(model.state.currentPosition);
-  //   }
+  constructor() {
+    console.log('test');
+    // this.loadMap.bind(this)();
+  }
 
   //
 
-  //   #onMapClick(e) {
-  //     const { lat, lng } = e.latlng;
-  //     const coord = [lat, lng];
-  //     console.log(coord);
-  //     this.#createMarker.bind(this)(coord);
-  //   }
+  #onMapClick(e) {
+    const { lat, lng } = e.latlng;
+    const coord = [lat, lng];
+    console.log(coord);
+    this.#createMarker.bind(this)(coord);
+  }
 
   //   #showForm() {}
 
-  //   #createMarker(coord) {
-  //     L.marker(coord).addTo(this.#map);
-  //   }
+  #createMarker(coord) {
+    L.marker(coord).addTo(this.#map);
+  }
 
   loadMap() {
     this.#map = L.map(this.#mapContainer).setView(

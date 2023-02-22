@@ -4,19 +4,27 @@ export const state = {
   currentPosition: [],
 };
 
-export const geolocate = function () {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
+export const geoLocate = function () {
+  return new Promise(resolve => {
+    navigator.geolocation.getCurrentPosition(position => {
+      resolve(getPosition(position));
+    });
   });
 };
 
-export const getPosition = async function () {
-  try {
-    const pos = await geolocate();
-    const { latitude: lat, longitude: lng } = pos.coords;
-    state.currentPosition = [lat, lng];
-    // console.log(state.currentPosition);
-  } catch (err) {
-    alert(err);
-  }
+// export const geoLocate = async function () {
+//   try {
+//     return new Promise(resolve => {
+//       navigator.geolocation.getCurrentPosition(position => {
+//         resolve(getPosition(position));
+//       });
+//     });
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
+
+export const getPosition = function (position) {
+  const { latitude: lat, longitude: lng } = position.coords;
+  state.currentPosition = [lat, lng];
 };
