@@ -5,6 +5,7 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputCost = document.querySelector('.form__input--cost');
 const inputYear = document.querySelector('.form__input--date');
 const form = document.querySelector('.form');
+const containerWorkouts = document.querySelector('.workouts');
 
 class Journey {
   place = '';
@@ -12,6 +13,7 @@ class Journey {
   distance = '';
   year = '';
   coords = '';
+  id = (Date.now() + '').slice(-10);
 
   constructor(place, cost, distance, year, coords = '') {
     this.place = place;
@@ -22,7 +24,7 @@ class Journey {
   }
 
   renderJourney() {
-    const html = `<li class="workout workout--cycling" data-id="1234567891">
+    const html = `<li class="workout workout--cycling" data-id="${this.id}">
     <h2 class="workout__title">${this.place} w ${this.year} r.</h2>
     <div class="workout__details">
       <span class="workout__icon">✈️</span>
@@ -40,15 +42,16 @@ class Journey {
 
 class App {
   #mapContainer = document.getElementById('map');
-
   #map;
-  #mapZoomLevel = 3;
+  #mapZoomLevel = 7;
   #clickCoords;
+  #journeys = [];
 
   constructor() {
     // Get user's position
     this.#getCurrentPosition();
     form.addEventListener('submit', this.#createJourney.bind(this));
+    containerWorkouts.addEventListener('click', this.#moveToMarker.bind(this));
   }
 
   #getCurrentPosition() {
@@ -71,12 +74,40 @@ class App {
 
   #showForm() {
     if (form.classList.contains('hidden')) form.classList.remove('hidden');
+    inputPlace.focus();
   }
 
   #hideForm() {
     if (!form.classList.contains('hidden')) form.classList.add('hidden');
   }
 
+  #validInputYear(inputData) {
+    return (
+      isFinite(inputData) &&
+      inputData.length === 4 &&
+      (inputData.slice(0, 2) === '20' || inputData.slice(0, 2) === '19')
+    );
+  }
+
+  #validInputNumber(inputNumber) {
+    return isFinite(inputNumber);
+  }
+
+  #moveToMarker(e) {
+    if (!this.#map) return;
+    const selectedJourneyItem = e.target.closest('.workout');
+    if (!selectedJourneyItem) return;
+    const selectedJourney = this.#journeys.find(
+      journey => journey.id === selectedJourneyItem.dataset.id
+    );
+    console.log(selectedJourney);
+    this.#map.setView(selectedJourney.coords, this.#mapZoomLevel, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
+  }
   #clearInputFields() {
     inputPlace.value = '';
     inputDistance.value = '';
@@ -90,13 +121,47 @@ class App {
     const cost = inputCost.value;
     const distance = inputDistance.value;
     const year = inputYear.value;
+    console.log(this.#validInputYear(year));
+    if (year && !this.#validInputYear(year)) {
+      alert('Rok: nieprawiłowa wartość');
+      return;
+    }
+    if (cost && !this.#validInputNumber(cost)) {
+      alert('Rok: nieprawiłowa wartość');
+      return;
+    }
+    if (distance && !this.#validInputNumber(distance)) {
+      alert('Dystans: nieprawiłowa wartość');
+      return;
+    }
 
-    const journey = new Journey(place, cost, distance, year, this.#clickCoords);
+    const journey = new Journey(
+      place,
+      +cost,
+      +distance,
+      +year,
+      this.#clickCoords
+    );
     journey.renderJourney();
-    console.log(journey.coords);
     this.#createMarker.bind(this)(journey);
     this.#hideForm.bind(this)();
     this.#clearInputFields();
+    this.#journeys.push(journey);
+    this.#setLocalStorage.bind(this)();
+    console.log(this.#journeys);
+  }
+
+  #setLocalStorage() {
+    const data = localStorage.setItem(
+      'journeys',
+      JSON.stringify(this.#journeys)
+    );
+  }
+
+  #getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('journeys'));
+    if (!data) return;
+    this.#workouts = data;
   }
 
   #createMarker(journey) {
