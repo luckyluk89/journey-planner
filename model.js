@@ -84,9 +84,8 @@ class App {
   #validInputYear(inputData) {
     return (
       isFinite(inputData) &&
-      inputData.toString.length === 4 &&
-      (inputData.toString().slice(0, 2) === '20' ||
-        inputData.toString().slice(0, 2) === '19')
+      inputData.length === 4 &&
+      (inputData.slice(0, 2) === '20' || inputData.slice(0, 2) === '19')
     );
   }
 
@@ -115,30 +114,24 @@ class App {
     inputYear.value = '';
   }
 
-  #validInputFields(year, cost, distance) {
-    if (!this.#validInputYear(year)) {
+  #createJourney(event) {
+    event.preventDefault();
+    const place = inputPlace.value;
+    const cost = inputCost.value;
+    const distance = inputDistance.value;
+    const year = inputYear.value;
+    if (year && !this.#validInputYear(year)) {
       alert('Rok: nieprawiłowa wartość');
       return;
     }
     if (cost && !this.#validInputNumber(cost)) {
-      alert('Koszt: nieprawiłowa wartość');
+      alert('Rok: nieprawiłowa wartość');
       return;
     }
     if (distance && !this.#validInputNumber(distance)) {
       alert('Dystans: nieprawiłowa wartość');
       return;
     }
-  }
-
-  #createJourney(event) {
-    event.preventDefault();
-    const place = inputPlace.value;
-    const cost = +inputCost.value;
-    const distance = +inputDistance.value;
-    const year = +inputYear.value;
-    // console.log(this.#validInputFields.bind(this)(year, cost, distance));
-    console.log(this.#validInputYear(year));
-    if (!this.#validInputFields.bind(this)(year, cost, distance)) return;
 
     const journey = new Journey(
       place,
