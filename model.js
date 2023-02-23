@@ -23,21 +23,21 @@ class Journey {
     this.coords = coords;
   }
 
-  renderJourney() {
-    const html = `<li class="workout workout--cycling" data-id="${this.id}">
-    <h2 class="workout__title">${this.place} w ${this.year} r.</h2>
-    <div class="workout__details">
-      <span class="workout__icon">✈️</span>
-      <span class="workout__value">${this.distance}</span>
-      <span class="workout__unit">km</span>
-    </div>
-    <div class="workout__details">
-      <span class="workout__icon">💲</span>
-      <span class="workout__value">${this.cost}</span>
-      <span class="workout__unit">zł</span>
-    </div>`;
-    form.insertAdjacentHTML('afterend', html);
-  }
+  //   renderJourney() {
+  //     const html = `<li class="workout workout--cycling" data-id="${this.id}">
+  //     <h2 class="workout__title">${this.place} w ${this.year} r.</h2>
+  //     <div class="workout__details">
+  //       <span class="workout__icon">✈️</span>
+  //       <span class="workout__value">${this.distance}</span>
+  //       <span class="workout__unit">km</span>
+  //     </div>
+  //     <div class="workout__details">
+  //       <span class="workout__icon">💲</span>
+  //       <span class="workout__value">${this.cost}</span>
+  //       <span class="workout__unit">zł</span>
+  //     </div>`;
+  //     form.insertAdjacentHTML('afterend', html);
+  //   }
 }
 
 class App {
@@ -84,8 +84,9 @@ class App {
   #validInputYear(inputData) {
     return (
       isFinite(inputData) &&
-      inputData.length === 4 &&
-      (inputData.slice(0, 2) === '20' || inputData.slice(0, 2) === '19')
+      inputData.toString.length === 4 &&
+      (inputData.toString().slice(0, 2) === '20' ||
+        inputData.toString().slice(0, 2) === '19')
     );
   }
 
@@ -100,7 +101,6 @@ class App {
     const selectedJourney = this.#journeys.find(
       journey => journey.id === selectedJourneyItem.dataset.id
     );
-    console.log(selectedJourney);
     this.#map.setView(selectedJourney.coords, this.#mapZoomLevel, {
       animate: true,
       pan: {
@@ -115,25 +115,30 @@ class App {
     inputYear.value = '';
   }
 
-  #createJourney(event) {
-    event.preventDefault();
-    const place = inputPlace.value;
-    const cost = inputCost.value;
-    const distance = inputDistance.value;
-    const year = inputYear.value;
-    console.log(this.#validInputYear(year));
-    if (year && !this.#validInputYear(year)) {
+  #validInputFields(year, cost, distance) {
+    if (!this.#validInputYear(year)) {
       alert('Rok: nieprawiłowa wartość');
       return;
     }
     if (cost && !this.#validInputNumber(cost)) {
-      alert('Rok: nieprawiłowa wartość');
+      alert('Koszt: nieprawiłowa wartość');
       return;
     }
     if (distance && !this.#validInputNumber(distance)) {
       alert('Dystans: nieprawiłowa wartość');
       return;
     }
+  }
+
+  #createJourney(event) {
+    event.preventDefault();
+    const place = inputPlace.value;
+    const cost = +inputCost.value;
+    const distance = +inputDistance.value;
+    const year = +inputYear.value;
+    // console.log(this.#validInputFields.bind(this)(year, cost, distance));
+    console.log(this.#validInputYear(year));
+    if (!this.#validInputFields.bind(this)(year, cost, distance)) return;
 
     const journey = new Journey(
       place,
@@ -142,13 +147,28 @@ class App {
       +year,
       this.#clickCoords
     );
-    journey.renderJourney();
+    this.#renderJourney(journey);
     this.#createMarker.bind(this)(journey);
     this.#hideForm.bind(this)();
     this.#clearInputFields();
     this.#journeys.push(journey);
     this.#setLocalStorage.bind(this)();
-    console.log(this.#journeys);
+  }
+
+  #renderJourney(journey) {
+    const html = `<li class="workout workout--cycling" data-id="${journey.id}">
+    <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
+    <div class="workout__details">
+      <span class="workout__icon">✈️</span>
+      <span class="workout__value">${journey.distance}</span>
+      <span class="workout__unit">km</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">💲</span>
+      <span class="workout__value">${journey.cost}</span>
+      <span class="workout__unit">zł</span>
+    </div>`;
+    form.insertAdjacentHTML('afterend', html);
   }
 
   #setLocalStorage() {
@@ -161,7 +181,7 @@ class App {
   #getLocalStorage() {
     const data = JSON.parse(localStorage.getItem('journeys'));
     if (!data) return;
-    this.#workouts = data;
+    this.#journeys = data;
   }
 
   #createMarker(journey) {
