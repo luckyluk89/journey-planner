@@ -22,22 +22,6 @@ class Journey {
     this.year = year;
     this.coords = coords;
   }
-
-  //   renderJourney() {
-  //     const html = `<li class="workout workout--cycling" data-id="${this.id}">
-  //     <h2 class="workout__title">${this.place} w ${this.year} r.</h2>
-  //     <div class="workout__details">
-  //       <span class="workout__icon">✈️</span>
-  //       <span class="workout__value">${this.distance}</span>
-  //       <span class="workout__unit">km</span>
-  //     </div>
-  //     <div class="workout__details">
-  //       <span class="workout__icon">💲</span>
-  //       <span class="workout__value">${this.cost}</span>
-  //       <span class="workout__unit">zł</span>
-  //     </div>`;
-  //     form.insertAdjacentHTML('afterend', html);
-  //   }
 }
 
 class App {
@@ -52,6 +36,7 @@ class App {
     this.#getCurrentPosition();
     form.addEventListener('submit', this.#createJourney.bind(this));
     containerWorkouts.addEventListener('click', this.#moveToMarker.bind(this));
+    // containerWorkouts.addEventListener('click', this.#trashBtnHandler);
   }
 
   #getCurrentPosition() {
@@ -94,6 +79,10 @@ class App {
   }
 
   #moveToMarker(e) {
+    // console.log(e.target.closest('.workout'));
+
+    if ((e.target = document.querySelector('.workout'))) console.log(e.target);
+
     if (!this.#map) return;
     const selectedJourneyItem = e.target.closest('.workout');
     if (!selectedJourneyItem) return;
@@ -148,6 +137,27 @@ class App {
     this.#setLocalStorage.bind(this)();
   }
 
+  // #renderJourney(journey) {
+  //   const html = `<li class="workout workout--cycling" data-id="${journey.id}">
+  //   <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
+  //   <div class="workout__details">
+  //     <span class="workout__icon">✈️</span>
+  //     <span class="workout__value">${journey.distance}</span>
+  //     <span class="workout__unit">km</span>
+  //   </div>
+  //   <div class="workout__details">
+  //     <span class="workout__icon">💲</span>
+  //     <span class="workout__value">${journey.cost}</span>
+  //     <span class="workout__unit">zł</span>
+  //   </div>`;
+  //   form.insertAdjacentHTML('afterend', html);
+  // }
+
+  #trashBtnHandler(event) {
+    const eventTarget = event.target;
+    console.log(event);
+  }
+
   #renderJourney(journey) {
     const html = `<li class="workout workout--cycling" data-id="${journey.id}">
     <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
@@ -160,7 +170,9 @@ class App {
       <span class="workout__icon">💲</span>
       <span class="workout__value">${journey.cost}</span>
       <span class="workout__unit">zł</span>
-    </div>`;
+    </div>
+    <div><i class="fa fa-trash-o" style="font-size:30px"></i></div>
+    </li>`;
     form.insertAdjacentHTML('afterend', html);
   }
 
