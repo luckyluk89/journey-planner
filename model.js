@@ -34,8 +34,13 @@ class App {
   constructor() {
     // Get user's position
     this.#getCurrentPosition();
+    this.#getLocalStorage.bind(this)();
+    this.#renderJourneysFromStorage.bind(this)();
     form.addEventListener('submit', this.#createJourney.bind(this));
-    containerWorkouts.addEventListener('click', this.#moveToMarker.bind(this));
+    containerWorkouts.addEventListener(
+      'click',
+      this.#journeysContClickHandler.bind(this)
+    );
     // containerWorkouts.addEventListener('click', this.#trashBtnHandler);
   }
 
@@ -78,12 +83,29 @@ class App {
     return isFinite(inputNumber);
   }
 
+  #journeysContClickHandler(e) {
+    const parentElement = e.target.closest('.workout');
+    if (e.target !== parentElement.querySelector('.fa'))
+      return this.#moveToMarker.bind(this)(e);
+    console.log(parentElement);
+    this.#trashClickHandler(parentElement);
+  }
+
   #moveToMarker(e) {
-    // console.log(e.target.closest('.workout'));
+    // if (e.target === document.querySelector('.fa'))
+    //   e.target.closest('.workout');
+    if (!this.#map)
+      // console.log(e.target.firstElementChild.classList.contains('fa fa-trash-o'));
+      // console.log(e.target.closes === document.querySelector('.workout'));
+      // if (
+      //   e.target.closest('.workout') &&
+      //   e.target === document.querySelector('.fa fa-trash-o')
+      // )
+      // console.log(document.querySelector('.workout'));
+      // === document.querySelector('.fa fa-trash-o'))
+      // if (e.target === document.querySelector('.workout')) console.log(e.target);
 
-    if ((e.target = document.querySelector('.workout'))) console.log(e.target);
-
-    if (!this.#map) return;
+      return;
     const selectedJourneyItem = e.target.closest('.workout');
     if (!selectedJourneyItem) return;
     const selectedJourney = this.#journeys.find(
@@ -96,6 +118,20 @@ class App {
       },
     });
   }
+
+  #trashClickHandler(parentElement) {
+    // const journeyElement = e.target.closest('.workout');
+    const journeyIdToRemove = parentElement.dataset.id;
+    const index = this.#journeys.findIndex(
+      journey => journey.id === journeyIdToRemove
+    );
+    if (index < 0) return;
+    this.#journeys.splice(index, 1);
+    this.#removeElement.bind(this)(parentElement);
+    this.#setLocalStorage.bind(this)();
+    this.#getLocalStorage.bind(this)();
+  }
+
   #clearInputFields() {
     inputPlace.value = '';
     inputDistance.value = '';
@@ -153,11 +189,6 @@ class App {
   //   form.insertAdjacentHTML('afterend', html);
   // }
 
-  #trashBtnHandler(event) {
-    const eventTarget = event.target;
-    console.log(event);
-  }
-
   #renderJourney(journey) {
     const html = `<li class="workout workout--cycling" data-id="${journey.id}">
     <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
@@ -173,7 +204,34 @@ class App {
     </div>
     <div><i class="fa fa-trash-o" style="font-size:30px"></i></div>
     </li>`;
-    form.insertAdjacentHTML('afterend', html);
+
+    containerWorkouts.insertAdjacentHTML('beforeend', html);
+  }
+
+  #renderJourneysFromStorage() {
+    if (!this.#journeys) return;
+    this.#journeys.forEach(journey => {
+      const html = `<li class="workout workout--cycling" data-id="${journey.id}">
+    <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
+    <div class="workout__details">
+      <span class="workout__icon">✈️</span>
+      <span class="workout__value">${journey.distance}</span>
+      <span class="workout__unit">km</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">💲</span>
+      <span class="workout__value">${journey.cost}</span>
+      <span class="workout__unit">zł</span>
+    </div>
+    <div><i class="fa fa-trash-o" style="font-size:30px"></i></div>
+    </li>`;
+
+      containerWorkouts.insertAdjacentHTML('beforeend', html);
+    });
+  }
+
+  #removeElement(parentElement) {
+    parentElement.remove();
   }
 
   #setLocalStorage() {
@@ -202,6 +260,7 @@ class App {
         })
       )
       .setPopupContent(`✈️ ${journey.place} ${journey.year}`);
+
     // .openPopup();
   }
 
