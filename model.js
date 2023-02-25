@@ -27,7 +27,7 @@ class Journey {
 class App {
   #mapContainer = document.getElementById('map');
   #map;
-  #mapZoomLevel = 7;
+  #mapZoomLevel = 4;
   #clickCoords;
   #journeys = [];
   #markers = [];
@@ -88,25 +88,11 @@ class App {
     const parentElement = e.target.closest('.workout');
     if (e.target !== parentElement.querySelector('.fa'))
       return this.#moveToMarker.bind(this)(e);
-    console.log(parentElement);
     this.#trashClickHandler(parentElement);
   }
 
   #moveToMarker(e) {
-    // if (e.target === document.querySelector('.fa'))
-    //   e.target.closest('.workout');
-    if (!this.#map)
-      // console.log(e.target.firstElementChild.classList.contains('fa fa-trash-o'));
-      // console.log(e.target.closes === document.querySelector('.workout'));
-      // if (
-      //   e.target.closest('.workout') &&
-      //   e.target === document.querySelector('.fa fa-trash-o')
-      // )
-      // console.log(document.querySelector('.workout'));
-      // === document.querySelector('.fa fa-trash-o'))
-      // if (e.target === document.querySelector('.workout')) console.log(e.target);
-
-      return;
+    if (!this.#map) return;
     const selectedJourneyItem = e.target.closest('.workout');
     if (!selectedJourneyItem) return;
     const selectedJourney = this.#journeys.find(
@@ -120,10 +106,14 @@ class App {
     });
   }
 
-  #removeMarker() {}
+  #removeMarker(markerId) {
+    const marker = this.#markers.find(
+      marker => markerId === marker.markerId
+    ).marker;
+    this.#map.removeLayer(marker);
+  }
 
   #trashClickHandler(parentElement) {
-    // const journeyElement = e.target.closest('.workout');
     const journeyIdToRemove = parentElement.dataset.id;
     const index = this.#journeys.findIndex(
       journey => journey.id === journeyIdToRemove
@@ -131,6 +121,7 @@ class App {
     if (index < 0) return;
     this.#journeys.splice(index, 1);
     this.#removeElement.bind(this)(parentElement);
+    this.#removeMarker.bind(this)(journeyIdToRemove);
     this.#setLocalStorage.bind(this)();
     this.#getLocalStorage.bind(this)();
   }
@@ -169,28 +160,12 @@ class App {
       this.#clickCoords
     );
     this.#renderJourney(journey);
-    this.#createMarker.bind(this)(journey);
+    this.#createMarker.bind(this)(journey, journey.id);
     this.#hideForm.bind(this)();
     this.#clearInputFields();
     this.#journeys.push(journey);
     this.#setLocalStorage.bind(this)();
   }
-
-  // #renderJourney(journey) {
-  //   const html = `<li class="workout workout--cycling" data-id="${journey.id}">
-  //   <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
-  //   <div class="workout__details">
-  //     <span class="workout__icon">✈️</span>
-  //     <span class="workout__value">${journey.distance}</span>
-  //     <span class="workout__unit">km</span>
-  //   </div>
-  //   <div class="workout__details">
-  //     <span class="workout__icon">💲</span>
-  //     <span class="workout__value">${journey.cost}</span>
-  //     <span class="workout__unit">zł</span>
-  //   </div>`;
-  //   form.insertAdjacentHTML('afterend', html);
-  // }
 
   #renderJourney(journey) {
     const html = `<li class="workout workout--cycling" data-id="${journey.id}">
@@ -250,9 +225,8 @@ class App {
     this.#journeys = data;
   }
 
-  #createMarker(journey) {
-    L.marker(journey.coords)
-      .addTo(this.#map)
+  #createMarker(journey, journeyId) {
+    const marker = L.marker(journey.coords)
       .bindPopup(
         L.popup({
           maxWidth: 250,
@@ -264,6 +238,8 @@ class App {
       )
       .setPopupContent(`✈️ ${journey.place} ${journey.year}`);
 
+    marker.addTo(this.#map);
+    this.#markers.push({ marker: marker, markerId: journeyId });
     // .openPopup();
   }
 
@@ -281,7 +257,7 @@ class App {
     }).addTo(this.#map);
     this.#map.on('click', this.#onMapClick.bind(this));
     this.#journeys.forEach(journey => {
-      this.#createMarker.bind(this)(journey);
+      this.#createMarker.bind(this)(journey, journey.id);
     });
   }
 }
