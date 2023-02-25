@@ -30,6 +30,7 @@ class App {
   #mapZoomLevel = 7;
   #clickCoords;
   #journeys = [];
+  #markers = [];
 
   constructor() {
     // Get user's position
@@ -118,6 +119,8 @@ class App {
       },
     });
   }
+
+  #removeMarker() {}
 
   #trashClickHandler(parentElement) {
     // const journeyElement = e.target.closest('.workout');
@@ -277,6 +280,9 @@ class App {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
     this.#map.on('click', this.#onMapClick.bind(this));
+    this.#journeys.forEach(journey => {
+      this.#createMarker.bind(this)(journey);
+    });
   }
 }
 
