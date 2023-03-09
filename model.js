@@ -6,6 +6,7 @@ const inputCost = document.querySelector('.form__input--cost');
 const inputYear = document.querySelector('.form__input--date');
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
+const resetButton = document.querySelector('.reset');
 
 class Journey {
   place = '';
@@ -42,6 +43,7 @@ class App {
       'click',
       this.#journeysContClickHandler.bind(this)
     );
+    resetButton.addEventListener('click', this.#reset.bind(this));
     // containerWorkouts.addEventListener('click', this.#trashBtnHandler);
   }
 
@@ -86,9 +88,19 @@ class App {
 
   #journeysContClickHandler(e) {
     const parentElement = e.target.closest('.workout');
+    if (!parentElement) return;
     if (e.target !== parentElement.querySelector('.fa'))
       return this.#moveToMarker.bind(this)(e);
     this.#trashClickHandler(parentElement);
+  }
+  #reset() {
+    this.#journeys.forEach(journey => {
+      this.#removeMarker(journey.id);
+    });
+    containerWorkouts.innerHTML = '';
+    this.#journeys = [];
+    this.#setLocalStorage();
+    this.#toggleResetButton.bind(this)();
   }
 
   #moveToMarker(e) {
@@ -121,6 +133,7 @@ class App {
     if (index < 0) return;
     this.#journeys.splice(index, 1);
     this.#removeElement.bind(this)(parentElement);
+    this.#toggleResetButton.bind(this)();
     this.#removeMarker.bind(this)(journeyIdToRemove);
     this.#setLocalStorage.bind(this)();
     this.#getLocalStorage.bind(this)();
@@ -165,12 +178,14 @@ class App {
     this.#clearInputFields();
     this.#journeys.push(journey);
     this.#setLocalStorage.bind(this)();
+
+    this.#toggleResetButton.bind(this)();
   }
 
   #renderJourney(journey) {
     const html = `<li class="workout workout--cycling" data-id="${journey.id}">
     <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
-    <div class="workout__details">
+    <div class="journey-summary"><div class="journey-details"><div class="workout__details">
       <span class="workout__icon">✈️</span>
       <span class="workout__value">${journey.distance}</span>
       <span class="workout__unit">km</span>
@@ -179,8 +194,8 @@ class App {
       <span class="workout__icon">💲</span>
       <span class="workout__value">${journey.cost}</span>
       <span class="workout__unit">zł</span>
-    </div>
-    <div><i class="fa fa-trash-o" style="font-size:30px"></i></div>
+    </div></div>
+    <div class="trash"><i class="fa fa-trash-o" style="font-size: 2.2rem"></i></div></div>
     </li>`;
 
     containerWorkouts.insertAdjacentHTML('beforeend', html);
@@ -191,7 +206,8 @@ class App {
     this.#journeys.forEach(journey => {
       const html = `<li class="workout workout--cycling" data-id="${journey.id}">
     <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
-    <div class="workout__details">
+    <div class="journey-summary">
+    <div class="journey-details"><div class="workout__details">
       <span class="workout__icon">✈️</span>
       <span class="workout__value">${journey.distance}</span>
       <span class="workout__unit">km</span>
@@ -200,8 +216,8 @@ class App {
       <span class="workout__icon">💲</span>
       <span class="workout__value">${journey.cost}</span>
       <span class="workout__unit">zł</span>
-    </div>
-    <div><i class="fa fa-trash-o" style="font-size:30px"></i></div>
+    </div></div>
+    <div class="trash"><i class="fa fa-trash-o" style="font-size: 2.2rem"></i></div></div>
     </li>`;
 
       containerWorkouts.insertAdjacentHTML('beforeend', html);
@@ -210,6 +226,14 @@ class App {
 
   #removeElement(parentElement) {
     parentElement.remove();
+  }
+
+  #toggleResetButton() {
+    if (!(this.#journeys.length === 0)) {
+      resetButton.classList.remove('hidden');
+    } else {
+      resetButton.classList.add('hidden');
+    }
   }
 
   #setLocalStorage() {
@@ -223,6 +247,7 @@ class App {
     const data = JSON.parse(localStorage.getItem('journeys'));
     if (!data) return;
     this.#journeys = data;
+    this.#toggleResetButton.bind(this)();
   }
 
   #createMarker(journey, journeyId) {

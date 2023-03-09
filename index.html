@@ -57,7 +57,7 @@
         </div>
         <div class="form__row">
           <label class="form__label">Rok*</label>
-          <input class="form__input form__input--date" placeholder="zł" />
+          <input class="form__input form__input--date" />
         </div>
         <div class="form__row">
           <label class="form__label">Dystans</label>
@@ -66,7 +66,7 @@
 
         <div class="form__row">
           <label class="form__label">Koszt</label>
-          <input class="form__input form__input--cost" />
+          <input class="form__input form__input--cost" placeholder="zł" />
         </div>
         <div class="form__row form__row--hidden">
           <label class="form__label">Elev Gain</label>
@@ -127,7 +127,11 @@
           <div class=".deleteText"><p>Usuń</p></div>
         </li> -->
       </ul>
-
+      <!-- <div class="reset"> -->
+      <div class="reset hidden">
+        <i class="fa fa-refresh" style="font-size: 2.2rem"></i>
+      </div>
+      <!-- </div> -->
       <p class="copyright">
         &copy; Copyright by
         <a
@@ -141,5 +145,10 @@
     </div>
 
     <div id="map"></div>
+
+    <!-- Dodanie komponentu gdzie prezentowane jest podsumowanie podróży -->
+    <!-- <div class="journeys-stats">
+      <div class="journey-stats-row"></div>
+    </div> -->
   </body>
 </html>

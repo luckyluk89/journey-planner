@@ -32,6 +32,7 @@ body {
   padding: 2.5rem;
 
   display: flex;
+  position: relative;
 }
 
 /* GENERAL */
@@ -223,3 +224,49 @@ a:visited {
   display: flex;
 }
 /* dodane style dot. przycisku kasowania treningu*/
+.trash {
+  margin-right: 10px;
+  color: #b6b6b6;
+}
+
+.trash:hover {
+  color: #f7f7f7;
+}
+
+.journey-details {
+  display: flex;
+  gap: 20px;
+}
+
+.journey-summary {
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.reset {
+  font-size: 2.2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: #b6b6b6;
+}
+
+.reset:hover {
+  color: #f7f7f7;
+}
+
+.hidden {
+  display: none;
+}
+
+/* .journeys-stats {
+  background-color: var(--color-dark--1);
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 20px;
+  height: 20px;
+} */
