@@ -16,7 +16,6 @@ class App {
       this.#journeysContClickHandler.bind(this)
     );
     resetButton.addEventListener('click', this.#reset.bind(this));
-    // containerWorkouts.addEventListener('click', this.#trashBtnHandler);
   }
 
   #openApp() {
@@ -25,18 +24,6 @@ class App {
     view.toggleResetButton();
     view.renderJourneysFromStorage();
   }
-
-  // #validInputYear(inputData) {
-  //   return (
-  //     isFinite(inputData) &&
-  //     inputData.length === 4 &&
-  //     (inputData.slice(0, 2) === '20' || inputData.slice(0, 2) === '19')
-  //   );
-  // }
-
-  // #validInputNumber(inputNumber) {
-  //   return isFinite(inputNumber);
-  // }
 
   #journeysContClickHandler(e) {
     const parentElement = e.target.closest('.workout');
@@ -93,30 +80,6 @@ class App {
 
   #createJourney(event) {
     event.preventDefault();
-    // const place = inputPlace.value;
-    // const cost = inputCost.value;
-    // const distance = inputDistance.value;
-    // const year = inputYear.value;
-    // if (year && !this.#validInputYear(year)) {
-    //   alert('Rok: nieprawiłowa wartość');
-    //   return;
-    // }
-    // if (cost && !this.#validInputNumber(cost)) {
-    //   alert('Rok: nieprawiłowa wartość');
-    //   return;
-    // }
-    // if (distance && !this.#validInputNumber(distance)) {
-    //   alert('Dystans: nieprawiłowa wartość');
-    //   return;
-    // }
-
-    // const journey = new model.Journey(
-    //   place,
-    //   +cost,
-    //   +distance,
-    //   +year,
-    //   model.state.clickCoords
-    // );
     const journey = model.getJourney();
     view.renderJourney(journey);
     view.createMarker(journey, journey.id);
