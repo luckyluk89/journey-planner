@@ -1,4 +1,5 @@
 export const state = {
+  map: '',
   mapZoomLevel: 4,
   clickCoords: [],
   journeys: [],
@@ -21,3 +22,14 @@ export class Journey {
     this.coords = coords;
   }
 }
+
+const getCurrentPosition = function () {
+  navigator.geolocation.getCurrentPosition(
+    position => position,
+    function () {
+      alert(
+        'Nie można ustalić Twojej pozycji. Powodem jest prawdopodobnie wyłączona usługa geolokalizacji w przeglądarce'
+      );
+    }
+  );
+};
