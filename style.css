@@ -226,11 +226,11 @@ a:visited {
 /* dodane style dot. przycisku kasowania treningu*/
 .trash {
   margin-right: 10px;
-  color: #b6b6b6;
+  color: var(--color-light--1);
 }
 
 .trash:hover {
-  color: #f7f7f7;
+  color: var(--color-light--2);
 }
 
 .journey-details {
@@ -251,11 +251,11 @@ a:visited {
   text-align: center;
   margin-bottom: 10px;
   cursor: pointer;
-  color: #b6b6b6;
+  color: var(--color-light--1);
 }
 
 .reset:hover {
-  color: #f7f7f7;
+  color: var(--color-light--2);
 }
 
 .hidden {
