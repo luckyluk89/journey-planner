@@ -80,6 +80,8 @@ class App {
 
   #createJourney(event) {
     event.preventDefault();
+    const input = model.getInputValues();
+    if (!model.validateInputValues(input)) return;
     const journey = model.getJourney();
     view.renderJourney(journey);
     view.createMarker(journey, journey.id);

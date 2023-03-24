@@ -56,23 +56,23 @@ const validInputNumber = function (inputNumber) {
   return isFinite(inputNumber);
 };
 
-const validateInputValues = function (obj) {
-  console.log(obj);
+export const validateInputValues = function (obj) {
   if (obj.year && !validInputYear(obj.year)) {
     alert('Rok: nieprawiłowa wartość');
-    return;
+    return 0;
   }
   if (obj.cost && !validInputNumber(obj.cost)) {
-    alert('Rok: nieprawiłowa wartość');
-    return;
+    alert('Koszt: nieprawiłowa wartość');
+    return 0;
   }
   if (obj.distance && !validInputNumber(obj.distance)) {
     alert('Dystans: nieprawiłowa wartość');
-    return;
+    return 0;
   }
+  return 1;
 };
 
-const getInputValues = function () {
+export const getInputValues = function () {
   const place = view.inputPlace.value;
   const cost = view.inputCost.value;
   const distance = view.inputDistance.value;
