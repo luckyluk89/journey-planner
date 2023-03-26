@@ -11,7 +11,7 @@ export const inputDistance = document.querySelector('.form__input--distance');
 export const inputCost = document.querySelector('.form__input--cost');
 export const inputYear = document.querySelector('.form__input--date');
 const form = document.querySelector('.form');
-const containerWorkouts = document.querySelector('.workouts');
+const containerJourneys = document.querySelector('.journeys');
 const resetButton = document.querySelector('.reset');
 
 // Form view
@@ -76,6 +76,7 @@ export const createMarker = function (journey, journeyId) {
 
   marker.addTo(model.state.map);
   model.state.markers.push({ marker: marker, markerId: journeyId });
+  console.log(model.state.clickCoords);
 };
 
 // Manipulating DOM
@@ -84,28 +85,30 @@ export const renderJourneysFromStorage = function () {
   if (!model.state.journeys) return;
   model.state.journeys.forEach(journey => {
     const html = generateJourneyMarkup(journey);
-    containerWorkouts.insertAdjacentHTML('beforeend', html);
+    containerJourneys.insertAdjacentHTML('beforeend', html);
   });
 };
 
 export const renderJourney = function (journey) {
   const html = generateJourneyMarkup(journey);
-  containerWorkouts.insertAdjacentHTML('beforeend', html);
+  containerJourneys.insertAdjacentHTML('beforeend', html);
 };
 
 export const generateJourneyMarkup = function (journey) {
-  const html = `<li class="workout workout--cycling" data-id="${journey.id}">
-  <h2 class="workout__title">${journey.place} w ${journey.year} r.</h2>
+  const html = `<li class="journey" data-id="${journey.id}">
+  <h2 class="journey__title">${journey.place} w ${journey.year} r.</h2>
+  <img class="journey-flag" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/1200px-Bandera_de_Espa%C3%B1a.svg.png">
   <div class="journey-summary">
-  <div class="journey-details"><div class="workout__details">
-    <span class="workout__icon">✈️</span>
-    <span class="workout__value">${journey.distance}</span>
-    <span class="workout__unit">km</span>
+  <div class="journey-details">  
+<div class="journey-distance">
+    <span class="journey__icon">✈️</span>
+    <span class="journey__value">${journey.distance}</span>
+    <span class="journey__unit">km</span>
   </div>
-  <div class="workout__details">
-    <span class="workout__icon">💲</span>
-    <span class="workout__value">${journey.cost}</span>
-    <span class="workout__unit">zł</span>
+  <div class="journey-cost">
+    <span class="journey__icon">💲</span>
+    <span class="journey__value">${journey.cost}</span>
+    <span class="journey__unit">zł</span>
   </div></div>
   <div class="trash"><i class="fa fa-trash-o" style="font-size: 2.2rem"></i></div></div>
   </li>`;

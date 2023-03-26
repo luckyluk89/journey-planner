@@ -2,7 +2,7 @@ import * as model from './model.js';
 import * as view from './view.js';
 
 const form = document.querySelector('.form');
-const containerWorkouts = document.querySelector('.workouts');
+const containerJourneys = document.querySelector('.journeys');
 const resetButton = document.querySelector('.reset');
 
 class App {
@@ -11,7 +11,7 @@ class App {
 
     this.#openApp();
     form.addEventListener('submit', this.#createJourney.bind(this));
-    containerWorkouts.addEventListener(
+    containerJourneys.addEventListener(
       'click',
       this.#journeysContClickHandler.bind(this)
     );
@@ -23,10 +23,37 @@ class App {
     model.getLocalStorage();
     view.toggleResetButton();
     view.renderJourneysFromStorage();
+    this.#getFlagSource();
+  }
+
+  async #geocode() {
+    try {
+      const response = await fetch(
+        'https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=50.88&longitude=12&localityLanguage=en'
+      );
+      const data = await response.json();
+      const countryCode = data.countryCode;
+      console.log(countryCode);
+      return;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async #getFlagSource() {
+    try {
+      const response = await fetch('https://restcountries.com/v3.1/alpha/DE');
+      const data = await response.json();
+      const flag = data[0].flags.png;
+      console.log(data);
+      console.log(flag);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   #journeysContClickHandler(e) {
-    const parentElement = e.target.closest('.workout');
+    const parentElement = e.target.closest('.journey');
     if (!parentElement) return;
     if (e.target !== parentElement.querySelector('.fa'))
       return this.#moveToMarker.bind(this)(e);
@@ -36,7 +63,7 @@ class App {
     model.state.journeys.forEach(journey => {
       this.#removeMarker(journey.id);
     });
-    containerWorkouts.innerHTML = '';
+    containerJourneys.innerHTML = '';
     model.state.journeys = [];
     model.setLocalStorage();
     view.toggleResetButton();
@@ -44,7 +71,7 @@ class App {
 
   #moveToMarker(e) {
     if (!model.state.map) return;
-    const selectedJourneyItem = e.target.closest('.workout');
+    const selectedJourneyItem = e.target.closest('.journey');
     if (!selectedJourneyItem) return;
     const selectedJourney = model.state.journeys.find(
       journey => journey.id === selectedJourneyItem.dataset.id
