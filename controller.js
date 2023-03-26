@@ -23,33 +23,6 @@ class App {
     model.getLocalStorage();
     view.toggleResetButton();
     view.renderJourneysFromStorage();
-    this.#getFlagSource();
-  }
-
-  async #geocode() {
-    try {
-      const response = await fetch(
-        'https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=50.88&longitude=12&localityLanguage=en'
-      );
-      const data = await response.json();
-      const countryCode = data.countryCode;
-      console.log(countryCode);
-      return;
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async #getFlagSource() {
-    try {
-      const response = await fetch('https://restcountries.com/v3.1/alpha/DE');
-      const data = await response.json();
-      const flag = data[0].flags.png;
-      console.log(data);
-      console.log(flag);
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   #journeysContClickHandler(e) {
@@ -105,18 +78,22 @@ class App {
     model.getLocalStorage();
   }
 
-  #createJourney(event) {
-    event.preventDefault();
-    const input = model.getInputValues();
-    if (!model.validateInputValues(input)) return;
-    const journey = model.getJourney();
-    view.renderJourney(journey);
-    view.createMarker(journey, journey.id);
-    view.hideForm();
-    view.clearInputFields();
-    model.state.journeys.push(journey);
-    model.setLocalStorage();
-    view.toggleResetButton();
+  async #createJourney(event) {
+    try {
+      event.preventDefault();
+      const input = model.getInputValues();
+      if (!model.validateInputValues(input)) return;
+      const journey = await model.getJourney();
+      view.renderJourney(journey);
+      view.createMarker(journey, journey.id);
+      view.hideForm();
+      view.clearInputFields();
+      model.state.journeys.push(journey);
+      model.setLocalStorage();
+      view.toggleResetButton();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   #removeElement(parentElement) {

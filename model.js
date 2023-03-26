@@ -15,14 +15,16 @@ export class Journey {
   distance = '';
   year = '';
   coords = '';
+  flagSource = '';
   id = (Date.now() + '').slice(-10);
 
-  constructor(place, cost, distance, year, coords = '') {
+  constructor(place, cost, distance, year, coords = '', flagSource) {
     this.place = place;
     this.distance = distance;
     this.cost = cost;
     this.year = year;
     this.coords = coords;
+    this.flagSource = flagSource;
   }
 }
 
@@ -80,16 +82,52 @@ export const getInputValues = function () {
   return { place: place, cost: cost, distance: distance, year: year };
 };
 
-export const getJourney = function () {
-  const input = getInputValues();
-  validateInputValues(input);
+export const getJourney = async function () {
+  try {
+    const input = getInputValues();
+    validateInputValues(input);
+    const flagSource = await getCountryFlag();
+    console.log(flagSource);
+    const journey = new Journey(
+      input.place,
+      +input.cost,
+      +input.distance,
+      +input.year,
+      state.clickCoords,
+      flagSource
+    );
+    return journey;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-  const journey = new Journey(
-    input.place,
-    +input.cost,
-    +input.distance,
-    +input.year,
-    state.clickCoords
-  );
-  return journey;
+const getCountryCode = async function () {
+  try {
+    const coords = state.clickCoords;
+    const { lat, lng } = coords;
+    const response = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+    );
+    const data = await response.json();
+    const countryCode = data.countryCode;
+    return countryCode;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const getCountryFlag = async function () {
+  try {
+    const countryCode = await getCountryCode();
+    const response = await fetch(
+      `https://restcountries.com/v3.1/alpha/${countryCode}`
+    );
+    const data = await response.json();
+    const flag = data[0].flags.png;
+    console.log(flag);
+    return flag;
+  } catch (err) {
+    console.error(err);
+  }
 };

@@ -56,7 +56,7 @@ export const loadMap = function (position) {
 };
 const onMapClick = function (e) {
   const { lat, lng } = e.latlng;
-  const coords = [lat, lng];
+  const coords = { lat: lat, lng: lng };
   model.state.clickCoords = coords;
   showForm();
 };
@@ -76,7 +76,6 @@ export const createMarker = function (journey, journeyId) {
 
   marker.addTo(model.state.map);
   model.state.markers.push({ marker: marker, markerId: journeyId });
-  console.log(model.state.clickCoords);
 };
 
 // Manipulating DOM
@@ -97,7 +96,8 @@ export const renderJourney = function (journey) {
 export const generateJourneyMarkup = function (journey) {
   const html = `<li class="journey" data-id="${journey.id}">
   <h2 class="journey__title">${journey.place} w ${journey.year} r.</h2>
-  <img class="journey-flag" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/1200px-Bandera_de_Espa%C3%B1a.svg.png">
+  <img class="journey-flag" src=${journey.flagSource}>
+  <div class="trash"><i class="fa fa-trash-o" style="font-size: 2.2rem"></i></div>
   <div class="journey-summary">
   <div class="journey-details">  
 <div class="journey-distance">
@@ -110,7 +110,7 @@ export const generateJourneyMarkup = function (journey) {
     <span class="journey__value">${journey.cost}</span>
     <span class="journey__unit">zł</span>
   </div></div>
-  <div class="trash"><i class="fa fa-trash-o" style="font-size: 2.2rem"></i></div></div>
+  </div>
   </li>`;
   return html;
 };
